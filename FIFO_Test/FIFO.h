@@ -1,21 +1,21 @@
 /*
  * FIFO Buffer
  * Implementation uses arrays to conserve memory
- * 
+ *
  * The MIT License (MIT)
- * 
- * Copyright (c) 2015 Daniel Eisterhold
- * 
+ *
+ * Copyright (c) 2019 Daniel Eisterhold, Maxime Franco
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,13 +24,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
- 
+
 #ifndef __FIFO__
 #define __FIFO__
-
-#include "Arduino.h"
-
+#include <stdint.h>
 #define FIFO_SIZE 512
+
 
 class FIFO {
   private:
@@ -45,9 +44,9 @@ class FIFO {
     uint8_t pop();
     int size();
     uint8_t peek();
-    void peekString(uint8_t* peekTab, int tabSize);
+    uint8_t peekString(uint8_t* dest, int dest_size);
     bool isEmpty();
-    uint8_t popString(uint8_t* popTab, uint8_t tabSize);
+    uint8_t popString(uint8_t* dest, uint8_t dest_size);
 };
 
 #endif

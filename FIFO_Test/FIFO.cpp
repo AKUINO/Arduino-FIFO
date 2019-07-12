@@ -1,21 +1,21 @@
 /*
  * FIFO Buffer
  * Implementation uses arrays to conserve memory
- * 
+ *
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2015 Daniel Eisterhold
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -53,7 +53,7 @@ bool FIFO::push(uint8_t data) {
       //Make sure tail is within the bounds of the array
       tail %= FIFO_SIZE;
     }
-  
+
     //Store data into array
     buffer[tail] = data;
     return true;
@@ -62,7 +62,6 @@ bool FIFO::push(uint8_t data) {
 
 uint8_t FIFO::pop() {
   if(numElements == 0) {
-//    Serial.println(F("Buffer empty"));
     return 0;
   }
   else {
@@ -89,7 +88,6 @@ int FIFO::size() {
 
 uint8_t FIFO::peek() {
   if (numElements == 0)  {
-    Serial.println("NULL");
     return 0;
   }
   else {
@@ -97,17 +95,20 @@ uint8_t FIFO::peek() {
   }
 }
 
-void FIFO::peekString(uint8_t* peekTab, int tabSize) {
+uint8_t FIFO::peekString(uint8_t* dest, int dest_size) {
   if (numElements == 0)  {
-    Serial.println("Empty FIFO");
+    return 0;
   }
   else {
-    int peekTabSize = buffer[head];
-    for (int i = 0; i < peekTabSize; i++) {
-      if ((i > numElements) || (i > tabSize)) {
-        Serial.println("Element out of FIFO bounds");
+    int str_size = buffer[head];
+    if( dest_size < str_size)
+        return 0;
+
+    for (int i = 0; i < dest_size; i++) {
+      if (i > numElements) {
+        return 0;
       }
-      peekTab[i] = buffer[(head + i + 1) % FIFO_SIZE];
+      dest[i] = buffer[(head + i + 1) % FIFO_SIZE];
     }
   }
 }
@@ -116,35 +117,18 @@ bool FIFO::isEmpty() {
   return numElements == 0;
 }
 
-uint8_t FIFO::popString(uint8_t* popTab, uint8_t maxTabSize) {
+uint8_t FIFO::popString(uint8_t* dest, uint8_t dest_size) {
   if(numElements == 0) {
-//    Serial.println(F("Buffer empty"));
-    Serial.println("Empty FIFO");
     return 0;
   }
   else {
-    uint8_t tabSize = pop();
-    Serial.print("TabSize = ");
-    Serial.println(tabSize);
-    for(uint8_t i = 0; (i < tabSize) && (i < maxTabSize); i++) {
-      popTab[i] = pop();
+    uint8_t str_size = pop();
+    if(dest_size < str_size)
+        return 0;
+    for(uint8_t i = 0;i < str_size; i++) {
+      dest[i] = pop();
     }
-    return tabSize;
+    return str_size;
   }
-  
 }
 
-
-/*47
-77
-TabSize = 77
-TmpBuffer[0] = 77
-77
-M=4&B=4.331&A0=0&A1=2&A2=36&C1=27.911&H1=44.671
-
-
-47
-TabSize = 47
-TmpBuffer[0] = 47
-77
-M=4&B=4.325&A0=0&A1=2&A2=37&C1=28.111&H1=43.806*/
