@@ -30,7 +30,7 @@
 
 #include "Arduino.h"
 
-#define FIFO_SIZE 64
+#define FIFO_SIZE 512
 
 class FIFO {
   private:
@@ -41,9 +41,13 @@ class FIFO {
   public:
     FIFO();
     ~FIFO();
-    void push(uint8_t data);
+    bool push(uint8_t data);
     uint8_t pop();
     int size();
+    uint8_t peek();
+    void peekString(uint8_t* peekTab, int tabSize);
+    bool isEmpty();
+    uint8_t popString(uint8_t* popTab, uint8_t tabSize);
 };
 
 #endif

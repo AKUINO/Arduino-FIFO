@@ -36,10 +36,10 @@ FIFO::FIFO() {
 FIFO::~FIFO() {
 }
 
-void FIFO::push(uint8_t data) {
+bool FIFO::push(uint8_t data) {
   if(numElements == FIFO_SIZE) {
 //    Serial.println(F("Buffer full"));
-    return;
+    return false;
   }
   else {
     //Increment size
@@ -56,13 +56,14 @@ void FIFO::push(uint8_t data) {
   
     //Store data into array
     buffer[tail] = data;
+    return true;
   }
 }
 
 uint8_t FIFO::pop() {
   if(numElements == 0) {
 //    Serial.println(F("Buffer empty"));
-    return NULL;
+    return 0;
   }
   else {
     //Decrement size
@@ -86,3 +87,64 @@ int FIFO::size() {
   return numElements;
 }
 
+uint8_t FIFO::peek() {
+  if (numElements == 0)  {
+    Serial.println("NULL");
+    return 0;
+  }
+  else {
+    return buffer[head];
+  }
+}
+
+void FIFO::peekString(uint8_t* peekTab, int tabSize) {
+  if (numElements == 0)  {
+    Serial.println("Empty FIFO");
+  }
+  else {
+    int peekTabSize = buffer[head];
+    for (int i = 0; i < peekTabSize; i++) {
+      if ((i > numElements) || (i > tabSize)) {
+        Serial.println("Element out of FIFO bounds");
+      }
+      peekTab[i] = buffer[(head + i + 1) % FIFO_SIZE];
+    }
+  }
+}
+
+bool FIFO::isEmpty() {
+  return numElements == 0;
+}
+
+uint8_t FIFO::popString(uint8_t* popTab, uint8_t maxTabSize) {
+  if(numElements == 0) {
+//    Serial.println(F("Buffer empty"));
+    Serial.println("Empty FIFO");
+    return 0;
+  }
+  else {
+    uint8_t tabSize = pop();
+    Serial.print("TabSize = ");
+    Serial.println(tabSize);
+    for(uint8_t i = 0; (i < tabSize) && (i < maxTabSize); i++) {
+      popTab[i] = pop();
+    }
+    return tabSize;
+  }
+  
+}
+
+
+/*47
+77
+TabSize = 77
+TmpBuffer[0] = 77
+77
+M=4&B=4.331&A0=0&A1=2&A2=36&C1=27.911&H1=44.671
+
+
+47
+TabSize = 47
+TmpBuffer[0] = 47
+77
+M=4&B=4.325&A0=0&A1=2&A2=37&C1=28.111&H1=43.806*/
