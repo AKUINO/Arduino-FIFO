@@ -188,7 +188,43 @@ int test_toomuch_elements(){
         std::cout << "Error exFIFO.popString()"<< exFIFO.peekString(displayBuf,511) << std::endl;
         return -1;
     }
+    return 0;
 }
+
+int test_max_size() {
+    FIFO exFIFO;
+	uint8_t displayBuf[70];
+	int total_elem = 0;
+    std::cout <<"Test exFIFO with max size" << std::endl;
+	for (int i = 0; i < 8; i++) {
+        char ex1[63];
+        total_elem += 64;
+        fillTab(ex1, 48 + i, sizeof(ex1));
+        fillFifo(& exFIFO,ex1,sizeof(ex1));
+        if(exFIFO.size() != total_elem){
+            std::cout << "Error exFIFO.size() "<< std::endl;
+            return -1;
+        }
+	}
+	uint8_t test = exFIFO.peek();
+    exFIFO.popString(displayBuf, test);
+    char ex1[63];
+    fillTab(ex1, 48+8, sizeof(ex1));
+    fillFifo(& exFIFO, ex1, sizeof(ex1));
+	while(!(exFIFO.isEmpty())) {
+        uint8_t test = 63;
+        if(exFIFO.peekString(displayBuf, 70) != test){
+            std::cout << "Error exFIFO.peekString()"<< std::endl;
+            return -1;
+        }
+        if(exFIFO.popString(displayBuf, 70) != test){
+            std::cout << "Error exFIFO.popString()"<< std::endl;
+            return -1;
+        }
+    }
+    return 0;
+}
+
 int main() {
     if(test_empty_size() !=0)
         return -1;
@@ -199,6 +235,8 @@ int main() {
     if(test_random_input()!= 0)
         return -1;
     if(test_toomuch_elements() != 0)
+        return -1;
+	if(test_max_size()!= 0)
         return -1;
 
 	return 0;
