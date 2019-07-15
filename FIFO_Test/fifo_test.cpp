@@ -108,11 +108,11 @@ int test_one_bad_element(){
 	uint8_t displayBuf[50];
 	exFIFO.push(17);
 	std::cout <<"Test exFIFO with one element but bad value" << std::endl;
-    if(exFIFO.peekString(displayBuf, 50) != 0){
+    if(exFIFO.peekString(displayBuf, 50) != -1){
         std::cout << "Error exFIFO.peekString()"<< std::endl;
         return -1;
     }
-    if(exFIFO.popString(displayBuf, 50) != 0){
+    if(exFIFO.popString(displayBuf, 50) != -1){
         std::cout << "Error exFIFO.popString()"<< std::endl;
         return -1;
     }
@@ -156,8 +156,12 @@ int test_toomuch_elements(){
     std::cout <<"Test exFIFO out of bounds" << std::endl;
     FIFO exFIFO;
 	uint8_t displayBuf[511];
-    exFIFO.push(511);
-    for(int i=0; i < 511; i++){
+    exFIFO.push(255);
+    for(int i=0; i < 255; i++){
+        exFIFO.push(i);
+    }
+    exFIFO.push(255);
+    for(int i=0; i < 255; i++){
         exFIFO.push(i);
     }
     if(exFIFO.size() !=512){
@@ -168,8 +172,20 @@ int test_toomuch_elements(){
         std::cout << "Error exFIFO.push()"<< std::endl;
         return -1;
     }
-    if(exFIFO.peekString(displayBuf,511) != 511){
-        std::cout << "Error exFIFO.peekString()"<< (int)exFIFO.peekString(displayBuf,511) << std::endl;
+    if(exFIFO.peekString(displayBuf,511) != 255){
+        std::cout << "Error exFIFO.peekString()" << std::endl;
+        return -1;
+    }
+    if(exFIFO.popString(displayBuf,511) != 255){
+        std::cout << "Error exFIFO.popString()" << std::endl;
+        return -1;
+    }
+    if(exFIFO.peekString(displayBuf,511) != 255){
+        std::cout << "Error exFIFO.peekString()"<< exFIFO.peekString(displayBuf,511) << std::endl;
+        return -1;
+    }
+    if(exFIFO.popString(displayBuf,511) != 255){
+        std::cout << "Error exFIFO.popString()"<< exFIFO.peekString(displayBuf,511) << std::endl;
         return -1;
     }
 }
@@ -187,7 +203,3 @@ int main() {
 
 	return 0;
 }
-
-
-
-

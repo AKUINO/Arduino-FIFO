@@ -44,9 +44,9 @@ class FIFO {
     uint8_t pop();
     int size();
     uint8_t peek();
-    uint8_t peekString(uint8_t* dest, int dest_size);
+    int peekString(uint8_t* dest, int dest_size);
     bool isEmpty();
-    uint8_t popString(uint8_t* dest, uint8_t dest_size);
+    int popString(uint8_t* dest, int dest_size);
 };
 
 #endif

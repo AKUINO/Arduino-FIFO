@@ -4,7 +4,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Daniel Eisterhold
+ * Copyright (c) 2015 Daniel Eisterhold, Maxime Franco
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -95,16 +95,16 @@ uint8_t FIFO::peek() {
   }
 }
 
-uint8_t FIFO::peekString(uint8_t* dest, int dest_size) {
+int FIFO::peekString(uint8_t* dest, int dest_size) {
   if (numElements == 0)  {
     return 0;
   }
   else {
     int str_size = buffer[head];
     if( dest_size < str_size)
-        return 0;
+        return -1;
     if( str_size > numElements)
-        return 0;
+        return -1;
 
     for (int i = 0; i < dest_size; i++) {
       dest[i] = buffer[(head + i + 1) % FIFO_SIZE];
@@ -117,16 +117,16 @@ bool FIFO::isEmpty() {
   return numElements == 0;
 }
 
-uint8_t FIFO::popString(uint8_t* dest, uint8_t dest_size) {
+int FIFO::popString(uint8_t* dest, int dest_size) {
   if(numElements == 0) {
     return 0;
   }
   else {
     uint8_t str_size = pop();
     if(dest_size < str_size)
-        return 0;
+        return -1;
     if( str_size > numElements)
-        return 0;
+        return -1;
     for(uint8_t i = 0;i < str_size; i++) {
       dest[i] = pop();
     }
