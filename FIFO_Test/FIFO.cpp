@@ -103,13 +103,13 @@ uint8_t FIFO::peekString(uint8_t* dest, int dest_size) {
     int str_size = buffer[head];
     if( dest_size < str_size)
         return 0;
+    if( str_size > numElements)
+        return 0;
 
     for (int i = 0; i < dest_size; i++) {
-      if (i > numElements) {
-        return 0;
-      }
       dest[i] = buffer[(head + i + 1) % FIFO_SIZE];
     }
+    return str_size;
   }
 }
 
@@ -124,6 +124,8 @@ uint8_t FIFO::popString(uint8_t* dest, uint8_t dest_size) {
   else {
     uint8_t str_size = pop();
     if(dest_size < str_size)
+        return 0;
+    if( str_size > numElements)
         return 0;
     for(uint8_t i = 0;i < str_size; i++) {
       dest[i] = pop();
