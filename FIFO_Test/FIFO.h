@@ -41,12 +41,13 @@ class FIFO {
     FIFO();
     ~FIFO();
     bool push(uint8_t data);
+    bool pushBuffer(uint8_t* src, int src_size);
     uint8_t pop();
     int size();
     uint8_t peek();
-    int peekString(uint8_t* dest, int dest_size);
+    int peekBuffer(uint8_t* dest, int dest_size);
     bool isEmpty();
-    int popString(uint8_t* dest, int dest_size);
+    int popBuffer(uint8_t* dest, int dest_size);
 };
 
 #endif

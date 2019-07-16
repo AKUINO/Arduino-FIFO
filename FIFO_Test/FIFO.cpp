@@ -60,6 +60,17 @@ bool FIFO::push(uint8_t data) {
   }
 }
 
+bool FIFO::pushBuffer(uint8_t* src, int src_size){
+    if(numElements + 1 + src_size > FIFO_SIZE){
+        return false;
+    }
+    if (push((uint8_t) src_size)){
+        for(int i=0; i < src_size; i++){
+            push(src[i]);
+        }
+    }
+}
+
 uint8_t FIFO::pop() {
   if(numElements == 0) {
     return 0;
@@ -95,7 +106,7 @@ uint8_t FIFO::peek() {
   }
 }
 
-int FIFO::peekString(uint8_t* dest, int dest_size) {
+int FIFO::peekBuffer(uint8_t* dest, int dest_size) {
   if (numElements == 0)  {
     return 0;
   }
@@ -117,7 +128,7 @@ bool FIFO::isEmpty() {
   return numElements == 0;
 }
 
-int FIFO::popString(uint8_t* dest, int dest_size) {
+int FIFO::popBuffer(uint8_t* dest, int dest_size) {
   if(numElements == 0) {
     return 0;
   }
