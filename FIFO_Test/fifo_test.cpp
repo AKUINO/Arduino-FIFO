@@ -235,6 +235,22 @@ int test_max_coverage(){
         std::cout << "Error exFIFO.popBuffer()" << std::endl;
         return -1;
     }
+    if(exFIFO.size() != 0){
+        std::cout << "Error exFIFO.size()"<< std::endl;
+        return -1;
+    }
+    exFIFO.push(45);
+    for(int i=0; i < 10; i++){
+        exFIFO.push(48);
+    }
+    if(exFIFO.peekBuffer(displayBuf,7) != -1){
+        std::cout << "Error exFIFO.peekBuffer()" << std::endl;
+        return -1;
+    }
+    if(exFIFO.popBuffer(displayBuf,7) != -1){
+        std::cout << "Error exFIFO.popBuffer()" << std::endl;
+        return -1;
+    }
     return 0;
 }
 
