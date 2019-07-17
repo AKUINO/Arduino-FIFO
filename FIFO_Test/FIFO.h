@@ -34,6 +34,9 @@
 #endif
 
 
+#include <iostream>
+#include <cstdlib>
+
 class FIFO {
   private:
     int head;

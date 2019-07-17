@@ -21,22 +21,23 @@ int test_empty_size(){
 	uint8_t displayBuf[50];
 	std::cout <<"Test exFIFO with an empty size" << std::endl;
 
-	if(exFIFO.pop() != 0){
+	if(exFIFO.pop() != 0
+	){
         std::cout << "Error exFIFO.pop()"<< std::endl;
         return -1;
     }
 
     if(exFIFO.peek() != 0){
-        std::cout << "Error exFIFO.peek()"<< std::endl;
+        std::cout << "Error exFIFO.peek()" << std::endl;
         return -1;
     }
 
-    if(exFIFO.peekBuffer(displayBuf, 50) != 0){
-        std::cout << "Error exFIFO.peekBuffer()"<< std::endl;
+    if(exFIFO.peekBuffer(displayBuf, 50) != -1){
+        std::cout << "Error exFIFO.peekBuffer()"<<std::endl;
         return -1;
     }
 
-    if(exFIFO.popBuffer(displayBuf, 50) != 0){
+    if(exFIFO.popBuffer(displayBuf, 50) != -1){
         std::cout << "Error exFIFO.popBuffer()"<< std::endl;
         return -1;
     }
@@ -209,6 +210,34 @@ int test_max_size() {
     return 0;
 }
 
+int test_max_coverage(){
+    std::cout <<"Test exFIFO test_max_coverage" << std::endl;
+    FIFO exFIFO;
+	uint8_t displayBuf[7];
+	uint8_t ex1[63];
+    fillTab(ex1, 48, 63);
+    exFIFO.pushBuffer(ex1,63);
+
+    if(exFIFO.size() !=64){
+        std::cout << "Error exFIFO.size()"<< std::endl;
+        return -1;
+    }
+
+    if(exFIFO.isEmpty()){
+        std::cout << "Error exFIFO.isEmpty()"<< std::endl;
+        return -1;
+    }
+    if(exFIFO.peekBuffer(displayBuf,7) != 63){
+        std::cout << "Error exFIFO.peekBuffer()" << std::endl;
+        return -1;
+    }
+    if(exFIFO.popBuffer(displayBuf,7) != 63){
+        std::cout << "Error exFIFO.popBuffer()" << std::endl;
+        return -1;
+    }
+    return 0;
+}
+
 int main() {
     if(test_empty_size() !=0)
         return -1;
@@ -221,6 +250,8 @@ int main() {
     if(test_toomuch_elements() != 0)
         return -1;
 	if(test_max_size()!= 0)
+        return -1;
+    if(test_max_coverage()!= 0)
         return -1;
 
 	return 0;
