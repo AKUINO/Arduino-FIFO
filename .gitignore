@@ -1,1 +1,6 @@
 *.o
+bin/
+obj/
+*.cbp
+*.depend
+*.*.gch
