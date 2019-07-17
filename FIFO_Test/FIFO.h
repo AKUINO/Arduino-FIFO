@@ -4,7 +4,8 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Daniel Eisterhold, Maxime Franco
+ * Copyright (c) 2015 Daniel Eisterhold
+ * Copyright (c) 2019 Romain Ceccotti, Maxime Franco (addind methods : pushBuffer, popBuffer, peekBuffer)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +29,9 @@
 #ifndef __FIFO__
 #define __FIFO__
 #include <stdint.h>
-#define FIFO_SIZE 512
+#ifndef FIFO_SIZE
+    #define FIFO_SIZE 512
+#endif
 
 
 class FIFO {
@@ -41,13 +44,13 @@ class FIFO {
     FIFO();
     ~FIFO();
     bool push(uint8_t data);
-    bool pushBuffer(uint8_t* src, int src_size);
+    bool pushBuffer(const uint8_t* src, int src_size);
     uint8_t pop();
+    int popBuffer(uint8_t* dest, int dest_size);
     int size();
     uint8_t peek();
     int peekBuffer(uint8_t* dest, int dest_size);
     bool isEmpty();
-    int popBuffer(uint8_t* dest, int dest_size);
 };
 
 #endif
