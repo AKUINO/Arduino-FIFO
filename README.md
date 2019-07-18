@@ -27,12 +27,17 @@ Then, it will put all elements between index 1 and index length them in a destin
 If you want to get the size of your first small buffer, the peek function will work as usual.
 
 ``` c
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
 #include "FIFO.h"
 
 void setup() {
+  //Open serial port at 9600 baud
+  Serial.begin(9600);
+
+  //Wait until the serial port has opened
+  while (!Serial) delay(1);
+
+  //Wait a little bit to make sure we don't get any garbage on the serial monitor
+  delay(100);
 }
 
 void loop() {
@@ -44,19 +49,19 @@ void loop() {
     FIFO exFifo;
 
     exFifo.pushBuffer((uint8_t*)tab, tabSize);
-    Serial.println(exFifo.size());
+    Serial.println((int)exFifo.size());
     exFifo.peekBuffer((uint8_t*)tmp, tmpSize);
 
     for (int i = 0; i < tabSize; i++) {
-        Serial.println((char)tmp[i]);
+        Serial.print((char)tmp[i]);
         tmp[i] = 0;
     }
-
+    Serial.println("");
     exFifo.popBuffer((uint8_t*)tmp, tmpSize);
     for (int i = 0; i < tabSize; i++) {
-        Serial.println((char)tmp[i]);
+        Serial.print((char)tmp[i]);
         tmp[i] = 0;
     }
-    return 0;
+    while(true);
 }
 ```

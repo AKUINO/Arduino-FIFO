@@ -53,6 +53,8 @@ void loop() {
         Serial.println("Error in test");
     if(test_max_size()!= 0)
         Serial.println("Error in test");
+    if(test_max_coverage()!= 0)
+        Serial.println("Error in test");
 
     while (1);
    
@@ -70,25 +72,26 @@ void fillTab(uint8_t* tab, char fillinDigit, int tabSize) {
 
 int test_empty_size(){
     FIFO exFIFO;
-	uint8_t displayBuf[50];
-	Serial.println("Test exFIFO with an empty size" );
+  uint8_t displayBuf[50];
+  Serial.println("Test exFIFO with an empty size" );
 
-	if(exFIFO.pop() != 0){
+  if(exFIFO.pop() != 0
+  ){
         Serial.println( "Error exFIFO.pop()");
         return -1;
     }
 
     if(exFIFO.peek() != 0){
-        Serial.println( "Error exFIFO.peek()");
+        Serial.println( "Error exFIFO.peek()" );
         return -1;
     }
 
-    if(exFIFO.peekBuffer(displayBuf, 50) != 0){
+    if(exFIFO.peekBuffer(displayBuf, 50) != -1){
         Serial.println( "Error exFIFO.peekBuffer()");
         return -1;
     }
 
-    if(exFIFO.popBuffer(displayBuf, 50) != 0){
+    if(exFIFO.popBuffer(displayBuf, 50) != -1){
         Serial.println( "Error exFIFO.popBuffer()");
         return -1;
     }
@@ -106,11 +109,11 @@ int test_empty_size(){
 
 int test_one_element(){
     FIFO exFIFO;
-	uint8_t displayBuf[50];
-	exFIFO.push(0);
-	Serial.println("Test exFIFO with one element" );
+  uint8_t displayBuf[50];
+  exFIFO.push(0);
+  Serial.println("Test exFIFO with one element" );
 
-	if(exFIFO.pop() != 0){
+  if(exFIFO.pop() != 0){
         Serial.println( "Error exFIFO.pop()");
         return -1;
     }
@@ -143,9 +146,9 @@ int test_one_element(){
 
 int test_one_bad_element(){
     FIFO exFIFO;
-	uint8_t displayBuf[50];
-	exFIFO.push(17);
-	Serial.println("Test exFIFO with one element but bad value" );
+  uint8_t displayBuf[50];
+  exFIFO.push(17);
+  Serial.println("Test exFIFO with one element but bad value" );
     if(exFIFO.peekBuffer(displayBuf, 50) != -1){
         Serial.println( "Error exFIFO.peekBuffer()");
         return -1;
@@ -159,8 +162,8 @@ int test_one_bad_element(){
 
 int test_random_input(){
     FIFO exFIFO;
-	uint8_t displayBuf[50];
-	int test_size[10];
+  uint8_t displayBuf[50];
+  int test_size[10];
     int total_elem =0;
     Serial.println("Test exFIFO with random values" );
     for( int i =0; i < 10; i++){
@@ -176,7 +179,7 @@ int test_random_input(){
             return -1;
         }
     }
-	while(!(exFIFO.isEmpty())) {
+    while(!(exFIFO.isEmpty())) {
         uint8_t test = exFIFO.peek();
         if(exFIFO.peekBuffer(displayBuf, test) != test){
             Serial.println( "Error exFIFO.peekBuffer()");
@@ -193,7 +196,7 @@ int test_random_input(){
 int test_toomuch_elements(){
     Serial.println("Test exFIFO out of bounds" );
     FIFO exFIFO;
-	uint8_t displayBuf[511];
+    uint8_t displayBuf[511];
     for(int i=0; i < 255; i++){
         displayBuf[i] = i;
     }
@@ -229,10 +232,10 @@ int test_toomuch_elements(){
 
 int test_max_size() {
     FIFO exFIFO;
-	  uint8_t displayBuf[70];
-	  int total_elem = 0;
+    uint8_t displayBuf[70];
+    int total_elem = 0;
     Serial.println("Test exFIFO with max size" );
-	  for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
         uint8_t ex1[63];
         total_elem += 64;
         fillTab(ex1, 48 + i, 63);
@@ -241,13 +244,13 @@ int test_max_size() {
             Serial.println( "Error exFIFO.size() ");
             return -1;
         }
-	  }
-	  uint8_t test = exFIFO.peek();
+    }
+    uint8_t test = exFIFO.peek();
     exFIFO.popBuffer(displayBuf, test);
     uint8_t ex1[63];
     fillTab(ex1, 48+8, 63);
     exFIFO.peekBuffer(ex1, 63);
-	  while(!(exFIFO.isEmpty())) {
+    while(!(exFIFO.isEmpty())) {
         uint8_t test = 63;
         if(exFIFO.peekBuffer(displayBuf, 70) != test){
             Serial.println( "Error exFIFO.peekBuffer()");
@@ -257,6 +260,50 @@ int test_max_size() {
             Serial.println( "Error exFIFO.popBuffer()");
             return -1;
         }
+    }
+    return 0;
+}
+
+int test_max_coverage(){
+    Serial.println("Test exFIFO test_max_coverage" );
+    FIFO exFIFO;
+    uint8_t displayBuf[7];
+    uint8_t ex1[63];
+    fillTab(ex1, 48, 63);
+    exFIFO.pushBuffer(ex1,63);
+
+    if(exFIFO.size() !=64){
+        Serial.println( "Error exFIFO.size()");
+        return -1;
+    }
+
+    if(exFIFO.isEmpty()){
+        Serial.println( "Error exFIFO.isEmpty()");
+        return -1;
+    }
+    if(exFIFO.peekBuffer(displayBuf,7) != 63){
+        Serial.println( "Error exFIFO.peekBuffer()" );
+        return -1;
+    }
+    if(exFIFO.popBuffer(displayBuf,7) != 63){
+        Serial.println( "Error exFIFO.popBuffer()" );
+        return -1;
+    }
+    if(exFIFO.size() != 0){
+        Serial.println( "Error exFIFO.size()");
+        return -1;
+    }
+    exFIFO.push(45);
+    for(int i=0; i < 10; i++){
+        exFIFO.push(48);
+    }
+    if(exFIFO.peekBuffer(displayBuf,7) != -1){
+        Serial.println( "Error exFIFO.peekBuffer()" );
+        return -1;
+    }
+    if(exFIFO.popBuffer(displayBuf,7) != -1){
+        Serial.println( "Error exFIFO.popBuffer()" );
+        return -1;
     }
     return 0;
 }
