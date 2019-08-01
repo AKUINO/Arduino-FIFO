@@ -93,7 +93,7 @@ bool FIFO::pushBuffer(const uint8_t* src, int src_size){
 */
 uint8_t FIFO::pop() {
   if(isEmpty()) {
-    return NULL;
+    return 0;
   }
   else {
     //Decrement size
@@ -122,19 +122,16 @@ uint8_t FIFO::pop() {
 */
 int FIFO::popBuffer(uint8_t* dest, int dest_size) {
   if(isEmpty()) {
-    return -1;
+    return 0;
   }
   else {
-    uint8_t str_size = peek();
+    uint8_t str_size = pop();
+    if(dest_size < str_size)
+        return -1;
     if( str_size > numElements)
         return -1;
-    pop();
     for(uint8_t i = 0;i < str_size; i++) {
-        if( i < dest_size){
-            dest[i] = pop();
-        }else{
-            pop();
-        }
+      dest[i] = pop();
     }
     return str_size;
   }
@@ -155,7 +152,7 @@ int FIFO::size() {
 * \return The function returns first element inside the FIFO or 0 if the FIFO is empty.
 */
 uint8_t FIFO::peek() {
-  if (isEmpty())  {
+  if (numElements == 0)  {
     return 0;
   }
   else {
@@ -175,18 +172,14 @@ int FIFO::peekBuffer(uint8_t* dest, int dest_size) {
     return -1;
   }
   else {
-    int str_size = peek();
-    if( str_size > numElements){
+    int str_size = buffer[head];
+    if( dest_size < str_size)
         return -1;
-    }
+    if( str_size > numElements)
+        return -1;
 
     for (int i = 0; i < dest_size; i++) {
-        if( i < dest_size){
-            dest[i] = buffer[(head + i + 1) % FIFO_SIZE];
-        }
-        else{
-            return str_size;
-        }
+      dest[i] = buffer[(head + i + 1) % FIFO_SIZE];
     }
     return str_size;
   }

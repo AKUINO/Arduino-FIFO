@@ -30,12 +30,9 @@
 #define __FIFO__
 #include <stdint.h>
 #ifndef FIFO_SIZE
-    #define FIFO_SIZE 512
+    #define FIFO_SIZE 32766
 #endif
 
-
-#include <iostream>
-#include <cstdlib>
 
 class FIFO {
   private:
