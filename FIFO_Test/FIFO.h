@@ -29,8 +29,11 @@
 #ifndef __FIFO__
 #define __FIFO__
 #include <stdint.h>
-#ifndef FIFO_SIZE
-    #define FIFO_SIZE 32766
+#ifdef FIFO_SIZE
+#elif ADAFRUIT_FEATHER_M0
+    #define FIFO_SIZE 16526
+#else
+    #define FIFO_SIZE 32760
 #endif
 
 
